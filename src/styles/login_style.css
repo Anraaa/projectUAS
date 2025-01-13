@@ -1,0 +1,48 @@
+.root {
+  -fx-font-family: "Arial";
+  -fx-background-color: #f4f4f4;
+}
+
+.heading {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333;
+}
+
+.label {
+  -fx-font-size: 14px;
+  -fx-text-fill: #555555;
+}
+
+.text-field,
+.password-field {
+  -fx-font-size: 14px;
+  -fx-pref-width: 200px;
+  -fx-padding: 5px;
+  -fx-border-color: #cccccc;
+  -fx-border-radius: 5px;
+  -fx-background-radius: 5px;
+}
+
+.text-field:focused,
+.password-field:focused {
+  -fx-border-color: #4caf50;
+  -fx-border-width: 2px;
+}
+
+.button {
+  -fx-background-color: #4caf50;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-padding: 8px 15px;
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+}
+
+.button:hover {
+  -fx-background-color: #45a049;
+}
+
+.button:pressed {
+  -fx-background-color: #388e3c;
+}
