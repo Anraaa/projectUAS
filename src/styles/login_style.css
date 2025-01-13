@@ -1,48 +1,42 @@
-.root {
-  -fx-font-family: "Arial";
-  -fx-background-color: #f4f4f4;
+#loginButton {
+    -fx-background-color: #3D3D3D;
+    -fx-font-size: 18;
+    -fx-background-radius: 20;
+    -fx-text-fill: #fcf9f9;
+    -fx-cursor: hand; /* Mengubah cursor menjadi pointer */
 }
 
-.heading {
-  -fx-font-size: 24px;
-  -fx-font-weight: bold;
-  -fx-text-fill: #333333;
+#loginButton:hover {
+    -fx-background-color: #555555; /* Warna berubah saat hover */
+    -fx-text-fill: #ffffff; /* Ubah warna teks */
+    -fx-scale-x: 1.05; /* Sedikit memperbesar tombol */
+    -fx-scale-y: 1.05;
 }
 
-.label {
-  -fx-font-size: 14px;
-  -fx-text-fill: #555555;
+#loginButton:pressed {
+    -fx-background-color: #222222; /* Warna lebih gelap saat tombol ditekan */
 }
 
-.text-field,
-.password-field {
-  -fx-font-size: 14px;
-  -fx-pref-width: 200px;
-  -fx-padding: 5px;
-  -fx-border-color: #cccccc;
-  -fx-border-radius: 5px;
-  -fx-background-radius: 5px;
+/* Efek Hover untuk TextField dan PasswordField */
+.text-field, .password-field {
+    -fx-background-color: #F72C5B; /* Warna latar default */
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2px 0; /* Garis bawah saja */
+    -fx-border-radius: 0;
+    -fx-text-fill: #FFFFFF; /* Warna teks */
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-cursor: text;
 }
 
-.text-field:focused,
-.password-field:focused {
-  -fx-border-color: #4caf50;
-  -fx-border-width: 2px;
+.text-field:hover, .password-field:hover {
+    -fx-border-color: black; /* Ubah warna border saat hover */
+    -fx-border-width: 0 0 3px 0; /* Tebalkan garis bawah saat hover */
+    -fx-background-color: gray; /* Sedikit lebih terang saat hover */
 }
 
-.button {
-  -fx-background-color: #4caf50;
-  -fx-text-fill: white;
-  -fx-font-size: 14px;
-  -fx-padding: 8px 15px;
-  -fx-background-radius: 5px;
-  -fx-border-radius: 5px;
-}
-
-.button:hover {
-  -fx-background-color: #45a049;
-}
-
-.button:pressed {
-  -fx-background-color: #388e3c;
+.text-field:focused, .password-field:focused {
+    -fx-border-color: black; /* Warna border saat field difokuskan */
+    -fx-border-width: 0 0 3px 0;
+    -fx-background-color: gray; /* Warna latar saat fokus */
 }

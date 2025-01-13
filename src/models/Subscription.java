@@ -2,7 +2,7 @@ package models;
 
 public class Subscription {
     private int id;
-    private String customerName; // Perbarui menjadi customerName
+    private String customerName;
     private String planName;
     private double price;
     private String startDate;
@@ -17,9 +17,12 @@ public class Subscription {
         this.endDate = endDate;
     }
 
-    // Getters and setters
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCustomerName() {

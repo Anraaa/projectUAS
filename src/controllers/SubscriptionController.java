@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.Subscription;
-import models.Customer;
 import database.DBHelper;
 
 import java.sql.Connection;
@@ -21,7 +20,7 @@ public class SubscriptionController {
     @FXML
     private TableColumn<Subscription, Integer> colId;
     @FXML
-private TableColumn<Subscription, String> colCustomerName;
+    private TableColumn<Subscription, String> colCustomerName; // Nama pelanggan
     @FXML
     private TableColumn<Subscription, String> colPlanName;
     @FXML
@@ -32,15 +31,15 @@ private TableColumn<Subscription, String> colCustomerName;
     private TableColumn<Subscription, String> colEndDate;
 
     @FXML
-    private ComboBox<Customer> customerIdField;
+    private ComboBox<String> customerIdField; // Nama pelanggan di ComboBox
     @FXML
-    private ComboBox<String> planNameField;
+    private ComboBox<String> planNameField; // Paket langganan
     @FXML
-    private TextField priceField;
+    private TextField priceField; // Harga
     @FXML
-    private DatePicker startDateField;
+    private DatePicker startDateField; // Tanggal mulai
     @FXML
-    private DatePicker endDateField;
+    private DatePicker endDateField; // Tanggal berakhir
 
     @FXML
     private Button addButton;
@@ -50,8 +49,6 @@ private TableColumn<Subscription, String> colCustomerName;
     private Button deleteButton;
 
     private ObservableList<Subscription> subscriptionList = FXCollections.observableArrayList();
-    private ObservableList<Customer> customerList = FXCollections.observableArrayList();
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @FXML
@@ -64,50 +61,46 @@ private TableColumn<Subscription, String> colCustomerName;
         colEndDate.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
         loadSubscriptions();
-        loadCustomers();
-        loadPlanNames();
+        loadCustomerNames(); // Load nama pelanggan
+        loadPlanNames();     // Load nama paket langganan
     }
 
     private void loadSubscriptions() {
-    subscriptionList.clear();
-    try (Connection conn = DBHelper.getConnection()) {
-        // Perbarui query untuk menampilkan nama pelanggan
-        String sql = "SELECT s.subscription_id, s.customer_id, c.name AS customer_name, s.plan_name, s.price, s.start_date, s.end_date " +
-                     "FROM subscriptions s " +
-                     "JOIN customers c ON s.customer_id = c.customer_id";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-
-        while (rs.next()) {
-            subscriptionList.add(new Subscription(
-                    rs.getInt("subscription_id"),
-                    rs.getString("customer_name"), // Ganti customerId dengan nama pelanggan
-                    rs.getString("plan_name"),
-                    rs.getDouble("price"),
-                    rs.getString("start_date"),
-                    rs.getString("end_date")
-            ));
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    subscriptionTable.setItems(subscriptionList);
-}
-
-    private void loadCustomers() {
-        customerList.clear();
+        subscriptionList.clear();
         try (Connection conn = DBHelper.getConnection()) {
-            String sql = "SELECT customer_id, name FROM customers";
+            String sql = "SELECT s.subscription_id, c.name AS customer_name, " +
+                         "s.plan_name, s.price, s.start_date, s.end_date " +
+                         "FROM subscriptions s " +
+                         "JOIN customers c ON s.customer_id = c.customer_id";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                customerList.add(new Customer(
-                        rs.getInt("customer_id"),
-                        rs.getString("name"), rs.getString("email"), rs.getString("phone"), rs.getString("address")
+                subscriptionList.add(new Subscription(
+                        rs.getInt("subscription_id"),
+                        rs.getString("customer_name"), // Ambil nama pelanggan
+                        rs.getString("plan_name"),
+                        rs.getDouble("price"),
+                        rs.getString("start_date"),
+                        rs.getString("end_date")
                 ));
             }
-            customerIdField.setItems(customerList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        subscriptionTable.setItems(subscriptionList);
+    }
+
+    private void loadCustomerNames() {
+        try (Connection conn = DBHelper.getConnection()) {
+            String sql = "SELECT name FROM customers";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            ObservableList<String> customerNames = FXCollections.observableArrayList();
+            while (rs.next()) {
+                customerNames.add(rs.getString("name"));
+            }
+            customerIdField.setItems(customerNames);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,18 +113,17 @@ private TableColumn<Subscription, String> colCustomerName;
 
     @FXML
     private void addSubscription() {
-        if (!validateFields()) return;
-
-        Integer customerId = customerIdField.getValue().getId();
+        String customerName = customerIdField.getValue();
         String planName = planNameField.getValue();
         double price = Double.parseDouble(priceField.getText());
-        String startDate = startDateField.getValue().format(DATE_FORMATTER);
-        String endDate = endDateField.getValue().format(DATE_FORMATTER);
+        String startDate = (startDateField.getValue() != null) ? startDateField.getValue().format(DATE_FORMATTER) : null;
+        String endDate = (endDateField.getValue() != null) ? endDateField.getValue().format(DATE_FORMATTER) : null;
 
         try (Connection conn = DBHelper.getConnection()) {
-            String sql = "INSERT INTO subscriptions (customer_id, plan_name, price, start_date, end_date) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO subscriptions (customer_id, plan_name, price, start_date, end_date) " +
+                         "VALUES ((SELECT customer_id FROM customers WHERE name = ?), ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, customerId);
+            stmt.setString(1, customerName);
             stmt.setString(2, planName);
             stmt.setDouble(3, price);
             stmt.setString(4, startDate);
@@ -148,16 +140,14 @@ private TableColumn<Subscription, String> colCustomerName;
     private void updateSubscription() {
         Subscription selectedSubscription = subscriptionTable.getSelectionModel().getSelectedItem();
         if (selectedSubscription == null) {
-            showAlert("No subscription selected!", Alert.AlertType.WARNING);
             return;
         }
 
-        if (!validateFields()) return;
-
         try (Connection conn = DBHelper.getConnection()) {
-            String sql = "UPDATE subscriptions SET customer_id = ?, plan_name = ?, price = ?, start_date = ?, end_date = ? WHERE subscription_id = ?";
+            String sql = "UPDATE subscriptions SET customer_id = (SELECT customer_id FROM customers WHERE name = ?), " +
+                         "plan_name = ?, price = ?, start_date = ?, end_date = ? WHERE subscription_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, customerIdField.getValue().getId());
+            stmt.setString(1, customerIdField.getValue());
             stmt.setString(2, planNameField.getValue());
             stmt.setDouble(3, Double.parseDouble(priceField.getText()));
             stmt.setString(4, startDateField.getValue().format(DATE_FORMATTER));
@@ -175,7 +165,6 @@ private TableColumn<Subscription, String> colCustomerName;
     private void deleteSubscription() {
         Subscription selectedSubscription = subscriptionTable.getSelectionModel().getSelectedItem();
         if (selectedSubscription == null) {
-            showAlert("No subscription selected!", Alert.AlertType.WARNING);
             return;
         }
 
@@ -196,20 +185,5 @@ private TableColumn<Subscription, String> colCustomerName;
         priceField.clear();
         startDateField.setValue(null);
         endDateField.setValue(null);
-    }
-
-    private boolean validateFields() {
-        if (customerIdField.getValue() == null || planNameField.getValue() == null || priceField.getText().isEmpty()
-                || startDateField.getValue() == null || endDateField.getValue() == null) {
-            showAlert("All fields must be filled!", Alert.AlertType.ERROR);
-            return false;
-        }
-        return true;
-    }
-
-    private void showAlert(String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

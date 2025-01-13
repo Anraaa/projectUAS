@@ -8,7 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="492.0" prefWidth="960.0" style="-fx-background-color: F72C5B;" stylesheets="/styles/subscription_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SubscriptionController">
    <children>
@@ -16,11 +16,11 @@
       <TableView fx:id="subscriptionTable" layoutX="-4.0" prefHeight="494.0" prefWidth="608.0" styleClass="styled-table">
         <columns>
             <TableColumn fx:id="colId" prefWidth="50" text="ID" />
-            <TableColumn fx:id="colCustomerName" prefWidth="125.0" text="Customer Name" />
-            <TableColumn fx:id="colPlanName" prefWidth="110.0" text="Plan Name" />
-            <TableColumn fx:id="colPrice" prefWidth="88.0" text="Price" />
-            <TableColumn fx:id="colStartDate" prefWidth="115.0" text="Start Date" />
-            <TableColumn fx:id="colEndDate" prefWidth="119.0" text="End Date" />
+            <TableColumn fx:id="colCustomerName" prefWidth="100" text="Customer Name" />
+            <TableColumn fx:id="colPlanName" prefWidth="125.0" text="Plan Name" />
+            <TableColumn fx:id="colPrice" text="Price" />
+            <TableColumn fx:id="colStartDate" prefWidth="114.0" text="Start Date" />
+            <TableColumn fx:id="colEndDate" prefWidth="138.0" text="End Date" />
         </columns>
       </TableView>
 
@@ -30,16 +30,17 @@
       <TextField fx:id="priceField" layoutX="674.0" layoutY="181.0" prefHeight="26.0" prefWidth="221.0" styleClass="styled-textfield" />
       <DatePicker fx:id="startDateField" layoutX="674.0" layoutY="242.0" prefHeight="26.0" prefWidth="221.0" styleClass="styled-datepicker" />
       <DatePicker fx:id="endDateField" layoutX="674.0" layoutY="302.0" prefHeight="26.0" prefWidth="221.0" styleClass="styled-datepicker" />
-
-      <!-- Button layout with HBox -->
-      <HBox layoutX="10" layoutY="420" spacing="20" />
       <Label layoutX="675.0" layoutY="34.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="Select Customer" />
       <Label layoutX="674.0" layoutY="98.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="Select Plan" />
       <Label layoutX="674.0" layoutY="160.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="Price" />
       <Label layoutX="674.0" layoutY="220.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="Start Date" />
       <Label layoutX="674.0" layoutY="280.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="End Date" />
-      <Button fx:id="addButton" layoutX="674.0" layoutY="344.0" onAction="#addSubscription" prefHeight="30.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-font-size: 13; -fx-background-radius: 20;" styleClass="styled-button" text="Add" textFill="WHITE" />
-      <Button fx:id="updateButton" layoutX="676.0" layoutY="398.0" onAction="#updateSubscription" prefHeight="26.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-background-radius: 20;" styleClass="styled-button" text="Update" textFill="WHITE" />
-      <Button fx:id="deleteButton" layoutX="676.0" layoutY="446.0" onAction="#deleteSubscription" prefHeight="26.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-background-radius: 20;" styleClass="styled-button" text="Delete" textFill="WHITE" />
+      <VBox alignment="CENTER" prefHeight="150.0" prefWidth="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="610.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button fx:id="addButton" onAction="#addSubscription" prefHeight="26.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-font-size: 13; -fx-background-radius: 20;" styleClass="styled-button" text="Add" textFill="WHITE" />
+            <Button fx:id="updateButton" onAction="#updateSubscription" prefHeight="26.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-background-radius: 20;" styleClass="styled-button" text="Update" textFill="WHITE" />
+            <Button fx:id="deleteButton" onAction="#deleteSubscription" prefHeight="26.0" prefWidth="221.0" style="-fx-background-color: #3D3D3D; -fx-background-radius: 20;" styleClass="styled-button" text="Delete" textFill="WHITE" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

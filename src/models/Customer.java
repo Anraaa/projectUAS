@@ -22,11 +22,6 @@ public class Customer {
     public String getName() {
         return name;
     }
-    
-    @Override
-    public String toString() {
-        return name; 
-    }
 
     public String getEmail() {
         return email;
