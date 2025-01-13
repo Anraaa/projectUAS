@@ -66,7 +66,11 @@ public class CustomerController {
             while (rs.next()) {
                 customerList.add(new Customer(
                         rs.getInt("customer_id"),
-                        rs.getString("name")));
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address")
+                ));
             }
         } catch (Exception e) {
             e.printStackTrace();

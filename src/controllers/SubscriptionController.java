@@ -104,7 +104,7 @@ private TableColumn<Subscription, String> colCustomerName;
             while (rs.next()) {
                 customerList.add(new Customer(
                         rs.getInt("customer_id"),
-                        rs.getString("name")
+                        rs.getString("name"), rs.getString("email"), rs.getString("phone"), rs.getString("address")
                 ));
             }
             customerIdField.setItems(customerList);
